@@ -1,40 +1,1282 @@
 <!DOCTYPE html>
-<html lang="fa">
+<html lang="fa" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>YadAI - برنامه‌ریزی درسی هوشمند</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📚 برنامه‌ریزی هوشمند درسی</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&family=Shabnam:wght@400;700&family=Samim:wght@400;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
   <style>
+    /* CSS Variables for a Themed Approach */
+    :root {
+      --primary-color: #00c3ff;
+      --secondary-color: #ff9ff3;
+      --bg-dark: #12121e;
+      --card-bg: #1e1e2f;
+      --text-light: #f0f0f0;
+      --text-dark: #1e1e2f;
+      --item-bg: #2c2c3c;
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      --radius: 12px;
+      --transition: all 0.3s ease-in-out;
+      --parent-color: #4CAF50;
+      --teacher-color: #FF9800;
+      --ai-color: #9C27B0;
+      --ai-advanced-color: #FF5722;
+      --ai-online-color: #673AB7;
+      --success-color: #4CAF50;
+      --danger-color: #f44336;
+      --info-color: #2196F3;
+      --light-blue: #00bcd4;
+    }
+
+    /* Base Styles */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
-      font-family: sans-serif;
-      background: #f0f4f8;
+      font-family: 'Vazirmatn', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-light);
+      padding: 1.5rem 1rem;
+      line-height: 1.7;
+      font-size: 16px;
+      transition: var(--transition);
+    }
+
+    h1, h2, h3 {
       text-align: center;
-      padding: 2rem;
+      font-weight: 700;
     }
+
     h1 {
-      color: #2c3e50;
+      color: var(--primary-color);
+      margin-bottom: 1.5rem;
+      font-size: 1.8rem;
     }
+
+    h2 {
+      margin: 2rem 0 1rem;
+      color: var(--primary-color);
+      font-size: 1.4rem;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
     .card {
-      background: white;
-      padding: 1rem;
-      margin: 1rem auto;
-      max-width: 400px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      background: var(--card-bg);
+      color: var(--text-light);
+      padding: 1.5rem;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 1.5rem;
+      transition: var(--transition);
+      border: 1px solid rgba(255, 255, 255, 0.05);
     }
-    input, button {
+
+    .form-group {
+      margin-bottom: 1rem;
+      text-align: right;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: var(--text-light);
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 0.75rem;
+      background: #2c2c3c;
+      color: var(--text-light);
+      border: 1px solid #444;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: border-color 0.3s;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--primary-color);
+    }
+
+    button {
+      width: 100%;
+      padding: 0.75rem;
+      background-color: var(--primary-color);
+      color: var(--card-bg);
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+      margin-top: 0.5rem;
+    }
+
+    button:hover {
+      background-color: #00a3cc;
+      transform: translateY(-2px);
+    }
+
+    /* AI Toggle */
+    .ai-mode-toggle {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+
+    .ai-mode-btn {
+      padding: 0.5rem 1rem;
+      background: #333;
+      border: none;
+      border-radius: 8px;
+      color: var(--text-light);
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .ai-mode-btn.active {
+      background: var(--primary-color);
+      color: var(--card-bg);
+    }
+
+    /* Hints and Alerts */
+    .hint {
+      background: rgba(103, 58, 183, 0.1);
+      border-right: 4px solid var(--ai-online-color);
+      padding: 0.75rem;
+      border-radius: 8px;
+      margin: 1rem 0;
+      font-size: 0.95rem;
+      text-align: right;
+      display: none;
+      animation: fadeIn 0.5s ease-in;
+    }
+
+    .ai-hint {
+      background: rgba(156, 39, 176, 0.1);
+      border-right: 4px solid var(--ai-color);
+      padding: 0.75rem;
+      border-radius: 8px;
+      margin: 1rem 0;
+      font-size: 0.95rem;
+      text-align: right;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      animation: fadeIn 0.5s ease-in;
+    }
+    
+    .ai-hint i {
+        color: var(--ai-color);
+        font-size: 1.2rem;
+        margin-top: 0.2rem;
+    }
+
+    /* Tasks List */
+    .tasks-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .task-item {
+      background: var(--item-bg);
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 0.75rem;
+      text-align: right;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-right: 4px solid var(--primary-color);
+      transition: var(--transition);
+    }
+
+    .task-item:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .task-info strong {
+      display: block;
+      font-size: 1.1rem;
+      margin-bottom: 0.2rem;
+    }
+    
+    .task-info small {
+        color: #aaa;
+        display: block;
+        margin-top: 0.3rem;
+    }
+
+    .task-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+    
+    .task-actions button {
+        width: auto;
+        padding: 0.4rem 0.8rem;
+        font-size: 0.9rem;
+        background-color: #333;
+        border-radius: 6px;
+        transition: background-color 0.2s;
+        margin: 0;
+    }
+
+    .task-actions .complete-btn { background-color: var(--success-color); }
+    .task-actions .delete-btn { background-color: var(--danger-color); }
+    .task-actions .edit-btn { background-color: var(--info-color); }
+
+    .task-actions button:hover {
+        opacity: 0.8;
+    }
+
+    .empty-state {
+      color: #aaa;
+      font-style: italic;
+      margin-top: 2rem;
+      text-align: center;
+      padding: 1rem;
+    }
+
+    /* Search and Stats */
+    .search-input {
+      width: 100%; 
+      padding: 0.75rem; 
+      border-radius: 8px; 
+      border: 1px solid #444; 
+      background: #2c2c3c;
+      color: var(--text-light);
+    }
+    
+    .stats-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        gap: 1rem;
+        margin-top: 1.5rem;
+    }
+    
+    .stat-box {
+        background: #333;
+        padding: 1rem;
+        border-radius: var(--radius);
+        text-align: center;
+        flex: 1 1 45%;
+        min-width: 150px;
+    }
+    
+    .stat-box h3 {
+        margin-bottom: 0.5rem;
+        font-size: 1rem;
+        color: var(--primary-color);
+    }
+    
+    .stat-box p {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--secondary-color);
+    }
+
+    /* Subject Colors */
+    .task-math { border-right-color: var(--danger-color) !important; }
+    .task-physics { border-right-color: var(--info-color) !important; }
+    .task-chemistry { border-right-color: #FFC107 !important; }
+    .task-biology { border-right-color: var(--success-color) !important; }
+    .task-literature { border-right-color: var(--ai-color) !important; }
+    .task-english { border-right-color: var(--light-blue) !important; }
+    .task-default { border-right-color: #9E9E9E !important; }
+
+    /* Guide Section */
+    .guide-section {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 1.5rem;
+      border-radius: var(--radius);
+      margin: 2rem 0;
+      border: 1px solid rgba(0, 195, 255, 0.3);
+      animation: slideUp 0.6s ease-out;
+    }
+
+    .guide-section h3 {
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+      font-size: 1.3rem;
+    }
+
+    .guide-section p {
+      text-align: right;
+      line-height: 1.8;
+      margin-bottom: 0.8rem;
+    }
+
+    /* Parent Panel */
+    .parent-panel {
+      background: rgba(76, 175, 80, 0.1);
+      border: 2px solid var(--parent-color);
+      padding: 1.5rem;
+      border-radius: var(--radius);
+      margin: 2rem 0;
+      display: none;
+    }
+
+    .parent-panel h3 {
+      color: var(--parent-color);
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .parent-report {
+      background: #2c2c3c;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    }
+
+    .parent-report h4 {
+      margin-bottom: 0.5rem;
+      color: var(--parent-color);
+    }
+
+    .parent-ai-summary {
+      background: rgba(156, 39, 176, 0.15);
+      border: 1px solid var(--ai-color);
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+    }
+
+    /* AI QA Section */
+    .ai-qa-section {
+      margin: 2rem 0;
+    }
+
+    .ai-qa-section h3 {
+      text-align: center;
+      color: var(--ai-color);
+      margin-bottom: 1rem;
+    }
+
+    .ai-advanced-hint {
+      background: rgba(255, 87, 34, 0.1);
+      border-right: 4px solid var(--ai-advanced-color);
+      padding: 0.75rem;
+      border-radius: 8px;
+      margin: 1rem 0;
+      font-size: 0.95rem;
+      text-align: right;
+      display: none;
+    }
+
+    .ai-advanced-hint button {
+      background: var(--ai-advanced-color);
+      color: white;
+      padding: 0.3rem 0.6rem;
+      border-radius: 4px;
+      border: none;
+      font-size: 0.9rem;
+      cursor: pointer;
+      margin-right: 0.5rem;
+    }
+
+    /* Personality Test */
+    .personality-test-section {
+      margin: 2rem 0;
+    }
+
+    .personality-test-section h3 {
+      text-align: center;
+      color: var(--ai-color);
+      margin-bottom: 1rem;
+    }
+
+    .test-question {
+      margin-bottom: 1.5rem;
+      text-align: right;
+    }
+
+    .test-options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .test-option {
       padding: 0.5rem;
-      margin: 0.5rem;
-      width: 80%;
+      background: #2c2c3c;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .test-option:hover {
+      background: #3a3a4a;
+    }
+
+    .test-option.selected {
+      background: var(--primary-color);
+      color: var(--card-bg);
+    }
+
+    /* Feedback Section */
+    .feedback-section {
+      margin: 2rem 0;
+    }
+
+    .feedback-section h3 {
+      text-align: center;
+      color: var(--teacher-color);
+      margin-bottom: 1rem;
+    }
+
+    /* Animations and Utilities */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+      from { 
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to { 
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .loading {
+      display: inline-block;
+      width: 1rem;
+      height: 1rem;
+      border: 2px solid #fff;
+      border-radius: 50%;
+      border-top-color: transparent;
+      animation: spin 1s linear infinite;
+    }
+
+    /* Child Mode */
+    .child-mode {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .child-mode .card {
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid #fff;
+    }
+
+    .child-mode button {
+      background: #FF6B6B;
+    }
+
+    .child-mode button:hover {
+      background: #FF5252;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 600px) {
+      body { padding: 1rem; font-size: 15px; }
+      h1 { font-size: 1.5rem; }
+      .card { padding: 1.2rem; }
+      .guide-section { padding: 1rem; }
+    }
+
+    /* Optional: Custom Scrollbar for better UI */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background-color: var(--primary-color);
+      border-radius: 10px;
+    }
+    ::-webkit-scrollbar-track {
+      background-color: var(--card-bg);
     }
   </style>
 </head>
-<ul id="lessonList"></ul><body>
-  <h1>🎓 YadAI</h1>
-  <p>اپلیکیشن هوشمند برنامه‌ریزی درسی برای دانش‌آموزان و کنکوری‌ها</p>
-  <div class="card">
-    <input type="text" placeholder="نام درس را وارد کنید">
-    <input type="time">
-    <button onclick="alert('درس ثبت شد!')">ثبت برنامه</button>
+<body>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js').then(registration => {
+          console.log('Service Worker registered with scope:', registration.scope);
+        }).catch(err => {
+          console.log('Service Worker registration failed:', err);
+        });
+      });
+    }
+  </script>
+
+  <div class="container">
+    <h1>📚 برنامه‌ریزی هوشمند درسی</h1>
+
+    <div id="calendarHint" class="hint"></div>
+
+    <div class="card">
+      <h3>⚙️ تنظیمات عمومی</h3>
+      <div class="form-group">
+        <label for="fontSelect">🔤 انتخاب فونت:</label>
+        <select id="fontSelect">
+          <option value="'Vazirmatn', sans-serif">وزیر متن</option>
+          <option value="'Shabnam', sans-serif">شبنم</option>
+          <option value="'Samim', sans-serif">صمیم</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="fontSizeRange">🔠 اندازه متن: <span id="fontSizeValue">16px</span></label>
+        <input type="range" id="fontSizeRange" min="14" max="22" value="16" />
+      </div>
+    </div>
+
+    <div class="guide-section" id="studyGuide">
+      <h3>💡 راهنمای مطالعه و موفقیت</h3>
+      <p id="guideText">لطفاً پایه خود را انتخاب کنید تا راهنمای متناسب با شما نمایش داده شود.</p>
+    </div>
+
+    <div class="parent-panel" id="parentPanel">
+      <h3>👨‍👩‍👧‍👦 پنل والدین</h3>
+      <div class="form-group">
+        <label for="parentPassword">رمز ورود والدین:</label>
+        <input type="password" id="parentPassword" placeholder="رمز خانوادگی را وارد کنید" />
+        <button id="parentLoginBtn" style="background-color: var(--parent-color); margin-top: 1rem;">ورود به پنل والدین</button>
+      </div>
+      
+      <div id="parentReportSection" style="display:none;">
+        <div class="parent-report">
+          <h4>📊 گزارش هفتگی فعالیت‌ها</h4>
+          <p>تعداد کل فعالیت‌ها: <span id="parentTotalTasks">0</span></p>
+          <p>مجموع زمان مطالعه: <span id="parentTotalTime">0</span> دقیقه</p>
+          <p>پایه تحصیلی: <span id="parentGrade">-</span></p>
+        </div>
+        
+        <div class="parent-ai-summary">
+          <h4>🤖 خلاصه هوش مصنوعی برای والدین</h4>
+          <p id="parentAISummary">هنوز داده کافی برای تحلیل وجود ندارد.</p>
+        </div>
+        
+        <button id="parentLogoutBtn" style="background-color: var(--danger-color); margin-top: 1rem;">خروج از پنل والدین</button>
+      </div>
+    </div>
+
+    <div class="card ai-qa-section">
+      <h3><i class="fas fa-robot"></i> 🤖 هوش مصنوعی آموزشی</h3>
+      
+      <div class="ai-mode-toggle">
+        <button class="ai-mode-btn active" data-mode="offline">🤖 هوش مصنوعی آفلاین</button>
+        <button class="ai-mode-btn" data-mode="online">🌐 هوش مصنوعی آنلاین</button>
+      </div>
+      
+      <div class="hint">
+        <p><strong>💡 هوش مصنوعی آنلاین فعال است:</strong></p>
+        <p>- جستجوی وب برای یافتن پاسخ‌های دقیق‌تر</p>
+        <p>- استفاده از مدل‌های قوی‌تر هوش مصنوعی</p>
+        <p>- پاسخ‌های عمیق‌تر و جامع‌تر</p>
+        <p style="font-size: 0.9rem; color: #aaa; margin-top: 0.5rem;">⚠️ نیاز به اتصال اینترنت دارد</p>
+      </div>
+
+      <div class="form-group">
+        <label for="aiQuestion">سوال خود را درباره درس بپرسید:</label>
+        <textarea id="aiQuestion" rows="3" placeholder="مثلاً: چرا در میتوز کروموزوم‌ها به استوای سلول می‌روند؟"></textarea>
+      </div>
+      <button id="askAIbtn">🧠 پرسش از هوش مصنوعی</button>
+      <div id="aiAnswer" class="ai-hint" style="display:none; margin-top:1rem; flex-direction:column; align-items:flex-start;">
+        <div id="aiMainAnswer"></div>
+        <div id="aiAdvancedHint" class="ai-advanced-hint">
+          <p><strong>💡 اطلاعات بیشتر برای درک عمیق‌تر (خارج از کتاب درسی):</strong></p>
+          <div id="aiAdvancedContent"></div>
+          <button id="hideAdvancedBtn">منصرف شدم</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card personality-test-section">
+      <h3><i class="fas fa-brain"></i> 🧠 تست شخصیت و مشاوره</h3>
+      <button id="startPersonalityTest">شروع تست شخصیت</button>
+      <div id="testContainer" style="display:none; margin-top:1rem;">
+        <div id="testQuestion" class="test-question"></div>
+        <div id="testOptions" class="test-options"></div>
+        <button id="nextQuestion" style="margin-top:1rem; display:none;">سوال بعدی</button>
+        <button id="finishTest" style="margin-top:1rem; display:none;">پایان تست</button>
+      </div>
+      <div id="testResult" class="ai-hint" style="display:none; margin-top:1rem; flex-direction:column; align-items:flex-start;"></div>
+    </div>
+
+    <div class="card feedback-section">
+      <h3><i class="fas fa-comment"></i> 📩 ارتباط با مالک</h3>
+      <div class="form-group">
+        <label for="feedbackType">نوع بازخورد:</label>
+        <select id="feedbackType">
+          <option value="bug">گزارش باگ</option>
+          <option value="suggestion">پیشنهاد</option>
+          <option value="praise">تقدیر</option>
+          <option value="other">سایر</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="feedbackMessage">پیام شما:</label>
+        <textarea id="feedbackMessage" rows="4" placeholder="پیام خود را اینجا بنویسید..."></textarea>
+      </div>
+      <button id="sendFeedback">ارسال بازخورد</button>
+      <div id="feedbackStatus" style="margin-top:1rem; text-align:center; color:var(--primary-color);"></div>
+    </div>
+
+    <div class="card" id="mainFormCard">
+      <div class="form-group">
+        <label for="gradeSelect">🎓 پایه تحصیلی:</label>
+        <select id="gradeSelect">
+          <option value="">انتخاب کنید...</option>
+          <option value="اول ابتدایی">اول ابتدایی</option>
+          <option value="دوم ابتدایی">دوم ابتدایی</option>
+          <option value="سوم ابتدایی">سوم ابتدایی</option>
+          <option value="چهارم ابتدایی">چهارم ابتدایی</option>
+          <option value="پنجم ابتدایی">پنجم ابتدایی</option>
+          <option value="ششم ابتدایی">ششم ابتدایی</option>
+          <option value="هفتم">هفتم</option>
+          <option value="هشتم">هشتم</option>
+          <option value="نهم">نهم</option>
+          <option value="دهم">دهم</option>
+          <option value="یازدهم">یازدهم</option>
+          <option value="دوازدهم">دوازدهم</option>
+          <option value="فارغ‌التحصیل">فارغ‌التحصیل / دانشجو</option>
+        </select>
+      </div>
+
+      <div class="form-group" id="fieldGroup" style="display:none;">
+        <label for="fieldSelect">🔬 رشته تحصیلی:</label>
+        <select id="fieldSelect">
+          <option value="">انتخاب رشته...</option>
+          <option value="ریاضی">ریاضی و فیزیک</option>
+          <option value="تجربی">علوم تجربی</option>
+          <option value="انسانی">علوم انسانی</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="subjectSelect">📚 درس مرتبط:</label>
+        <select id="subjectSelect" disabled>
+          <option value="">ابتدا پایه و رشته را انتخاب کنید</option>
+        </select>
+      </div>
+
+      <div class="form-group" id="customSubjectGroup" style="display:none;">
+        <label for="customSubjectInput">📝 نام درس جدید:</label>
+        <input type="text" id="customSubjectInput" placeholder="مثلاً: هنر، کدنویسی، قرآن..." />
+      </div>
+
+      <div class="form-group">
+        <label for="taskInput">📌 عنوان فعالیت:</label>
+        <input type="text" id="taskInput" placeholder="مثلاً: مطالعه فصل ۳ ریاضی" />
+      </div>
+
+      <div class="form-group">
+        <label for="timeInput">⏱ زمان تخمینی (دقیقه):</label>
+        <input type="number" id="timeInput" min="5" step="5" placeholder="مثلاً: 30" />
+      </div>
+
+      <button id="addTaskBtn">➕ افزودن فعالیت</button>
+    </div>
+
+    <div class="card">
+      <input type="text" id="searchInput" placeholder="🔍 جستجوی فعالیت یا درس..." class="search-input" />
+      <div id="statsSection" class="stats-container" style="display:none;">
+          <div class="stat-box">
+              <h3>فعالیت‌ها</h3>
+              <p id="totalTasksCount">0</p>
+          </div>
+          <div class="stat-box">
+              <h3>کل زمان</h3>
+              <p id="totalStudyTime">0 دقیقه</p>
+          </div>
+      </div>
+    </div>
+    
+    <div id="aiHintBox" class="ai-hint" style="display:none;">
+      <i class="fas fa-robot"></i>
+      <span id="aiHintText">پیشنهاد هوشمند: ...</span>
+    </div>
+
+    <h2>📋 فعالیت‌های برنامه‌ریزی شده</h2>
+    <ul id="tasksList" class="tasks-list"></ul>
+    <p id="emptyState" class="empty-state">هنوز هیچ فعالیتی اضافه نشده است.</p>
   </div>
-<script src="app.js"></script></body>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
+  <script>
+    // Module 1: Core Utilities and State Management
+    // Centralized state management to avoid global variable issues.
+    const state = {
+        tasks: [],
+        userProfile: {},
+        editingIndex: -1,
+        isParentMode: false,
+        aiMode: 'offline',
+        // Hashed password for security. NEVER store plain text password.
+        PARENT_PASSWORD_HASH: "b7e45e7518d6a3f9e9531c34a41f64f1d4f828a1c9a6a86c4f0d367c30a473e0", // Hashed "123456"
+    };
+
+    // A centralized object to cache all DOM elements for performance
+    const elements = {
+      // Form elements
+      taskInput: document.getElementById('taskInput'),
+      subjectSelect: document.getElementById('subjectSelect'),
+      customSubjectGroup: document.getElementById('customSubjectGroup'),
+      customSubjectInput: document.getElementById('customSubjectInput'),
+      timeInput: document.getElementById('timeInput'),
+      addTaskBtn: document.getElementById('addTaskBtn'),
+      gradeSelect: document.getElementById('gradeSelect'),
+      fieldSelect: document.getElementById('fieldSelect'),
+      fieldGroup: document.getElementById('fieldGroup'),
+      
+      // Lists and displays
+      tasksList: document.getElementById('tasksList'),
+      emptyState: document.getElementById('emptyState'),
+      statsSection: document.getElementById('statsSection'),
+      totalTasksCount: document.getElementById('totalTasksCount'),
+      totalStudyTime: document.getElementById('totalStudyTime'),
+      searchInput: document.getElementById('searchInput'),
+      
+      // UI components
+      studyGuide: document.getElementById('studyGuide'),
+      guideText: document.getElementById('guideText'),
+      calendarHint: document.getElementById('calendarHint'),
+      mainFormCard: document.getElementById('mainFormCard'),
+
+      // Settings
+      fontSelect: document.getElementById('fontSelect'),
+      fontSizeRange: document.getElementById('fontSizeRange'),
+      fontSizeValue: document.getElementById('fontSizeValue'),
+
+      // AI components
+      aiQuestion: document.getElementById('aiQuestion'),
+      askAIbtn: document.getElementById('askAIbtn'),
+      aiAnswer: document.getElementById('aiAnswer'),
+      aiMainAnswer: document.getElementById('aiMainAnswer'),
+      aiAdvancedHint: document.getElementById('aiAdvancedHint'),
+      aiAdvancedContent: document.getElementById('aiAdvancedContent'),
+      hideAdvancedBtn: document.getElementById('hideAdvancedBtn'),
+      aiHintBox: document.getElementById('aiHintBox'),
+      aiHintText: document.getElementById('aiHintText'),
+
+      // Parent Panel
+      parentPanel: document.getElementById('parentPanel'),
+      parentPassword: document.getElementById('parentPassword'),
+      parentLoginBtn: document.getElementById('parentLoginBtn'),
+      parentLogoutBtn: document.getElementById('parentLogoutBtn'),
+      parentReportSection: document.getElementById('parentReportSection'),
+      parentTotalTasks: document.getElementById('parentTotalTasks'),
+      parentTotalTime: document.getElementById('parentTotalTime'),
+      parentGrade: document.getElementById('parentGrade'),
+      parentAISummary: document.getElementById('parentAISummary'),
+      
+      // Personality Test
+      startPersonalityTest: document.getElementById('startPersonalityTest'),
+      testContainer: document.getElementById('testContainer'),
+      testQuestion: document.getElementById('testQuestion'),
+      testOptions: document.getElementById('testOptions'),
+      nextQuestion: document.getElementById('nextQuestion'),
+      finishTest: document.getElementById('finishTest'),
+      testResult: document.getElementById('testResult'),
+
+      // Feedback
+      feedbackType: document.getElementById('feedbackType'),
+      feedbackMessage: document.getElementById('feedbackMessage'),
+      sendFeedback: document.getElementById('sendFeedback'),
+      feedbackStatus: document.getElementById('feedbackStatus'),
+    };
+
+    // Data Store (Database)
+    // For now, this is a JS object. In production, this would be a real database.
+    const dataStore = {
+      subjectsByGrade: {
+        'اول ابتدایی': ['فارسی', 'ریاضی', 'علوم', 'هدیه‌های آسمان', 'اجتماعی', 'ورزش', 'هنر'],
+        'دوم ابتدایی': ['فارسی', 'ریاضی', 'علوم', 'هدیه‌های آسمان', 'اجتماعی', 'ورزش', 'هنر', 'خوانداری'],
+        'سوم ابتدایی': ['فارسی', 'ریاضی', 'علوم', 'هدیه‌های آسمان', 'اجتماعی', 'ورزش', 'هنر', 'تعلیمات اجتماعی', 'خوانداری'],
+        'چهارم ابتدایی': ['فارسی', 'ریاضی', 'علوم', 'هدیه‌های آسمان', 'اجتماعی', 'ورزش', 'هنر', 'تعلیمات اجتماعی', 'کار و فناوری', 'خوانداری'],
+        'پنجم ابتدایی': ['فارسی', 'ریاضی', 'علوم', 'هدیه‌های آسمان', 'اجتماعی', 'ورزش', 'هنر', 'تعلیمات اجتماعی', 'کار و فناوری', 'زبان انگلیسی', 'خوانداری'],
+        'ششم ابتدایی': ['فارسی', 'ریاضی', 'علوم', 'هدیه‌های آسمان', 'اجتماعی', 'ورزش', 'هنر', 'تعلیمات اجتماعی', 'کار و فناوری', 'زبان انگلیسی'],
+        'هفتم': ['فارسی', 'ریاضی', 'علوم', 'مطالعات اجتماعی', 'عربی', 'قرآن', 'پیام‌های آسمان', 'نگارش', 'زبان انگلیسی', 'کار و فناوری', 'هنر', 'ورزش'],
+        'هشتم': ['فارسی', 'ریاضی', 'علوم', 'مطالعات اجتماعی', 'عربی', 'قرآن', 'پیام‌های آسمان', 'نگارش', 'زبان انگلیسی', 'کار و فناوری', 'هنر', 'ورزش'],
+        'نهم': ['فارسی', 'ریاضی', 'علوم', 'مطالعات اجتماعی', 'عربی', 'قرآن', 'پیام‌های آسمان', 'نگارش', 'زبان انگلیسی', 'کار و فناوری', 'هنر', 'ورزش'],
+        'دهم': {
+          'ریاضی': ['ریاضی', 'فیزیک', 'شیمی', 'زیست', 'فارسی', 'عربی', 'زبان انگلیسی', 'تفکر و سواد رسانه‌ای', 'نگارش', 'آمادگی دفاعی', 'هنر', 'ورزش'],
+          'تجربی': ['ریاضی', 'فیزیک', 'شیمی', 'زیست', 'فارسی', 'عربی', 'زبان انگلیسی', 'تفکر و سواد رسانه‌ای', 'نگارش', 'آمادگی دفاعی', 'هنر', 'ورزش'],
+          'انسانی': ['ریاضی', 'جغرافیا', 'اقتصاد', 'تاریخ', 'فارسی', 'عربی', 'زبان انگلیسی', 'تفکر و سواد رسانه‌ای', 'نگارش', 'آمادگی دفاعی', 'هنر', 'ورزش']
+        },
+        'یازدهم': {
+          'ریاضی': ['ریاضی', 'فیزیک', 'شیمی', 'فارسی', 'عربی', 'زبان انگلیسی', 'تفکر و سواد رسانه‌ای', 'آمادگی دفاعی', 'هنر', 'ورزش'],
+          'تجربی': ['ریاضی', 'فیزیک', 'شیمی', 'زیست', 'فارسی', 'عربی', 'زبان انگلیسی', 'تفکر و سواد رسانه‌ای', 'آمادگی دفاعی', 'هنر', 'ورزش'],
+          'انسانی': ['ریاضی', 'جغرافیا', 'اقتصاد', 'تاریخ', 'فارسی', 'عربی', 'زبان انگلیسی', 'تفکر و سواد رسانه‌ای', 'آمادگی دفاعی', 'هنر', 'ورزش']
+        },
+        'دوازدهم': {
+          'ریاضی': ['ریاضی', 'فیزیک', 'شیمی', 'فارسی', 'عربی', 'زبان انگلیسی', 'تفکر و سواد رسانه‌ای', 'آمادگی دفاعی', 'هنر', 'ورزش'],
+          'تجربی': ['ریاضی', 'فیزیک', 'شیمی', 'زیست', 'فارسی', 'عربی', 'زبان انگلیسی', 'تفکر و سواد رسانه‌ای', 'آمادگی دفاعی', 'هنر', 'ورزش'],
+          'انسانی': ['ریاضی', 'جغرافیا', 'اقتصاد', 'تاریخ', 'فارسی', 'عربی', 'زبان انگلیسی', 'تفکر و سواد رسانه‌ای', 'آمادگی دفاعی', 'هنر', 'ورزش']
+        },
+        'فارغ‌التحصیل': ['زبان انگلیسی', 'ریاضی', 'برنامه‌نویسی', 'مدیریت زمان', 'مطالعات عمومی', 'مهارت‌های زندگی', 'ورزش', 'هنر']
+      },
+      studyGuides: {
+        'اول ابتدایی': `🌟 <strong>راهنمای مطالعه برای کلاس اول:</strong><br>- روزانه حداکثر ۳۰ دقیقه مطالعه کنید.<br>- از بازی‌های آموزشی برای یادگیری استفاده کنید.`,
+        'دوم ابتدایی': `🌈 <strong>راهنمای مطالعه برای کلاس دوم:</strong><br>- روزانه ۴۰ دقیقه مطالعه مفید داشته باشید.<br>- از روش‌های تصویری و داستانی برای یادگیری استفاده کنید.`,
+        'سوم ابتدایی': `📚 <strong>راهنمای مطالعه برای کلاس سوم:</strong><br>- روزانه ۴۵-۶۰ دقیقه مطالعه داشته باشید.<br>- شروع به یادداشت‌برداری ساده کنید.`,
+        'چهارم ابتدایی': `🎯 <strong>راهنمای مطالعه برای کلاس چهارم:</strong><br>- روزانه ۱-۱.۵ ساعت مطالعه داشته باشید.<br>- شروع به برنامه‌ریزی هفتگی کنید.`,
+        'پنجم ابتدایی': `🚀 <strong>راهنمای مطالعه برای کلاس پنجم:</strong><br>- روزانه ۱.۵-۲ ساعت مطالعه داشته باشید.<br>- شروع به خلاصه‌نویسی از درس‌ها کنید.`,
+        'ششم ابتدایی': `🎓 <strong>راهنمای مطالعه برای کلاس ششم:</strong><br>- روزانه ۲-۲.۵ ساعت مطالعه داشته باشید.<br>- شروع به تست‌زنی ساده کنید.`,
+        'هفتم': `📖 <strong>راهنمای مطالعه برای کلاس هفتم:</strong><br>- روزانه ۲.۵-۳ ساعت مطالعه داشته باشید.<br>- یادگیری دروس جدید مانند عربی و پیام‌های آسمان را جدی بگیرید.`,
+        'هشتم': `🔬 <strong>راهنمای مطالعه برای کلاس هشتم:</strong><br>- روزانه ۳-۳.۵ ساعت مطالعه داشته باشید.<br>- شروع به مرور منظم درس‌های قبلی کنید.`,
+        'نهم': `🚀 <strong>راهنمای مطالعه برای کلاس نهم:</strong><br>- این سال پایه‌ای برای انتخاب رشته است!<br>- روزانه ۳.۵-۴ ساعت مطالعه داشته باشید.`,
+        'دهم': `📚 <strong>راهنمای مطالعه برای کلاس دهم:</strong><br>- این سال شروع جدی مسیر کنکور است!<br>- روزانه ۴-۵ ساعت مطالعه مفید داشته باشید.`,
+        'دوازدهم': `🔥 <strong>راهنمای مطالعه برای کلاس دوازدهم:</strong><br>- این سال حساس‌ترین سال تحصیلی شماست!<br>- روزانه ۵-۷ ساعت مطالعه مفید داشته باشید.`,
+        'فارغ‌التحصیل': `🎓 <strong>راهنمای مطالعه برای دانشجویان و فارغ‌التحصیلان:</strong><br>- مطالعه را هدفمند و مبتنی بر نیاز انجام دهید.<br>- از تکنیک‌های پومودورو و برنامه‌ریزی بلندمدت استفاده کنید.`
+      },
+      iranianEvents: {
+        '1404-01-01': '📅 شروع نوروز — تعطیلات بهاری',
+        '1404-01-02': '📅 عید نوروز',
+        '1404-01-03': '📅 عید نوروز',
+        '1404-01-13': '📅 سیزده بدر — پایان تعطیلات نوروز',
+        '1404-04-01': '📅 شروع امتحانات نهایی',
+        '1404-04-15': '📅 پایان امتحانات نهایی',
+        '1404-05-20': '📅 شروع سال تحصیلی جدید',
+        '1404-09-30': '📅 شروع تعطیلات زمستانی',
+        '1404-10-15': '📅 پایان تعطیلات زمستانی'
+      },
+      educationalContent: {
+        'زیست دهم': {'میتوز': 'در کتاب زیست‌شناسی دهم، فصل 3، میتوز به عنوان نوعی تقسیم سلولی تعریف شده...'},
+        'زیست یازدهم': {'میتوز': 'در کتاب زیست‌شناسی یازدهم، میتوز به عنوان فرآیندی برای رشد و ترمیم بافت‌ها معرفی شده است...'},
+        'زیست دوازدهم': {'میتوز': 'در کتاب زیست‌شناسی دوازدهم، میتوز در رابطه با چرخه سلولی و کنترل آن مورد بررسی قرار می‌گیرد...'},
+        'فارسی هفتم': {'فعل': 'در کتاب فارسی هفتم، فعل به عنوان کلمه‌ای تعریف شده که برای بیان کاری که فاعل انجام می‌دهد به کار می‌رود...'},
+        'فارسی هشتم': {'فعل': 'در کتاب فارسی هشتم، انواع فعل از جمله ماضی، مضارع و آینده مورد بررسی قرار می‌گیرند...'},
+        'فارسی نهم': {'فعل': 'در کتاب فارسی نهم، فعل‌ها از نظر ساختار و نقش دستوری مورد بررسی قرار می‌گیرند...'},
+        'فارسی دهم': {'فعل': 'در کتاب فارسی دهم، فعل‌ها در رابطه با ساختار جمله و نقش آن‌ها در بیان معانی مختلف مورد بررسی قرار می‌گیرند...'}
+      },
+      personalityTestQuestions: [
+        { question: "وقتی با یک مسئله درسی مواجه می‌شوید، معمولاً چه کار می‌کنید؟", options: ["بلافاصله شروع به حل آن می‌کنم", "اول برنامه‌ریزی می‌کنم، بعد شروع می‌کنم", "صبر می‌کنم تا کسی کمکم کند", "سعی می‌کنم از آن فرار کنم"] },
+        { question: "در مورد درس‌های سخت‌تر مثل ریاضی یا فیزیک چه فکری دارید؟", options: ["چالش‌های جذابی هستند که باید حلشون کنم", "اگر زمان کافی بذارم، می‌تونم یادشون بگیرم", "ترجیح می‌دم درس‌های آسون‌تر رو بخونم", "ازشون متنفرم و هیچ وقت نمی‌تونم یادشون بگیرم"] },
+        { question: "چقدر اوقات فراغت خود را به مطالعه یا یادگیری چیزهای جدید اختصاص می‌دهید؟", options: ["هر روز حداقل یک ساعت", "چند بار در هفته", "فقط وقتی که تکلیف دارم", "هرگز — اوقات فراغت برای استراحت است"] },
+        { question: "وقتی نمره‌ای پایین می‌گیرید، معمولاً چه واکنشی نشان می‌دهید؟", options: ["بلافاصله شروع به بررسی اشتباهاتم می‌کنم", "با معلم یا والدینم صحبت می‌کنم تا راه‌حل پیدا کنم", "ناراحت می‌شوم اما بعدش فراموشش می‌کنم", "از درس خوندن دست می‌کشم"] },
+        { question: "چقدر به برنامه‌ریزی برای مطالعه اهمیت می‌دهید؟", options: ["برنامه‌ریزی دقیق هفتگی دارم و پایبندش هستم", "برنامه کلی دارم اما گاهی ازش تخطی می‌کنم", "برنامه‌ریزی نمی‌کنم — هر روز هر درسی که دلم خواست رو می‌خونم", "اصلاً برنامه‌ریزی نمی‌کنم و همیشه عجله‌ای درس می‌خونم"] }
+      ]
+    };
+
+    // Helper Functions
+    // Persian Date converter
+    function toPersianDate(date) {
+      // In production, use a full library for accuracy.
+      return new Date(date).toLocaleDateString('fa-IR', { year: 'numeric', month: 'numeric', day: 'numeric' });
+    }
+    
+    // Module 2: View and UI Logic
+    function renderTasks(taskArray = state.tasks) {
+      elements.tasksList.innerHTML = '';
+      if (taskArray.length === 0) {
+        elements.emptyState.style.display = 'block';
+        return;
+      }
+      elements.emptyState.style.display = 'none';
+
+      // Use DocumentFragment for performance
+      const fragment = document.createDocumentFragment();
+      taskArray.forEach((task, index) => {
+        const li = document.createElement('li');
+        li.className = 'task-item ' + getSubjectClass(task.subject);
+        li.innerHTML = `
+          <div class="task-info">
+            <strong>${task.title}</strong>
+            <small>
+              🎓 ${task.grade || 'نامشخص'} ${task.field ? ' - ' + task.field : ''} | 
+              📚 ${task.subject} | 
+              ⏱ ${task.time} دقیقه | 
+              📅 ${task.createdAt}
+            </small>
+          </div>
+          <div class="task-actions">
+            <button class="edit-btn" onclick="editTask(${index})" title="ویرایش"><i class="fas fa-edit"></i></button>
+            <button class="complete-btn" onclick="completeTask(${index})" title="انجام شد"><i class="fas fa-check"></i></button>
+            <button class="delete-btn" onclick="deleteTask(${index})" title="حذف"><i class="fas fa-trash"></i></button>
+          </div>
+        `;
+        fragment.appendChild(li);
+      });
+      elements.tasksList.appendChild(fragment);
+    }
+
+    function getSubjectClass(subject) {
+      const subjectMap = {
+        'ریاضی': 'task-math', 'فیزیک': 'task-physics', 'شیمی': 'task-chemistry', 'زیست': 'task-biology',
+        'فارسی': 'task-literature', 'ادبیات': 'task-literature', 'زبان انگلیسی': 'task-english',
+        'علوم': 'task-biology', 'مطالعات اجتماعی': 'task-literature', 'عربی': 'task-literature',
+      };
+      return subjectMap[subject] || 'task-default';
+    }
+
+    function updateStats() {
+      if (state.tasks.length === 0) {
+        elements.statsSection.style.display = 'none';
+        return;
+      }
+      const totalMinutes = state.tasks.reduce((sum, task) => sum + task.time, 0);
+      elements.totalTasksCount.textContent = state.tasks.length;
+      elements.totalStudyTime.textContent = `${totalMinutes} دقیقه`;
+      elements.statsSection.style.display = 'flex';
+    }
+
+    function updateStudyGuide(grade) {
+      const guide = dataStore.studyGuides[grade] || `💡 <strong>راهنمای عمومی مطالعه:</strong><br>- برنامه‌ریزی منظم و واقع‌بینانه داشته باشید.`;
+      elements.guideText.innerHTML = guide;
+    }
+
+    // Module 3: AI and Logic
+    function generateAIPersonalizedAdvice() {
+      const preferredTime = analyzeStudyPattern();
+      const grade = elements.gradeSelect.value;
+      const streakDays = calculateStreakDays();
+      
+      let advice = "";
+      if (grade && (grade.includes('دهم') || grade.includes('یازدهم') || grade.includes('دوازدهم'))) {
+        advice = "📚 پیشنهاد: برای دروس تخصصی، حتماً تست‌زنی رو به برنامه‌ریزی اضافه کن!";
+      } else {
+        advice = "💡 پیشنهاد: سعی کن هر روز حداقل یک درس جدید رو شروع کنی!";
+      }
+      
+      if (preferredTime === 'morning') advice += " صبح‌ها ذهنت تازه‌تره — درس‌های سخت‌تر رو صبح برنامه‌ریزی کن.";
+      else if (preferredTime === 'evening') advice += " شب‌ها آرام‌تری — برای خلاصه‌نویسی و مرور عالیه.";
+      
+      const motivationalMessage = getMotivationalMessage(state.userProfile.gender, grade, streakDays);
+      return `${advice} ${motivationalMessage}`;
+    }
+
+    // Module 4: Event Handlers and Main Logic
+    function handleTask() {
+      const title = elements.taskInput.value.trim();
+      let subject = elements.subjectSelect.value;
+      const time = parseInt(elements.timeInput.value);
+      const grade = elements.gradeSelect.value;
+      const field = elements.fieldSelect.value;
+      
+      if (!title || !subject || !time || !grade) {
+        alert('لطفاً تمام فیلدها را کامل کنید!');
+        return;
+      }
+
+      const newTask = {
+        id: Date.now(),
+        title, subject, time, grade, field: field || '',
+        createdAt: new Date().toLocaleString('fa-IR', { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+      };
+
+      if (state.editingIndex === -1) {
+        state.tasks.push(newTask);
+      } else {
+        state.tasks[state.editingIndex] = newTask;
+        state.editingIndex = -1;
+        elements.addTaskBtn.textContent = '➕ افزودن فعالیت';
+      }
+      
+      saveTasks();
+      renderTasks();
+      updateAIHint();
+      updateStats();
+      updateParentReport();
+      resetForm();
+    }
+    
+    function resetForm() {
+      elements.taskInput.value = '';
+      elements.subjectSelect.value = '';
+      elements.customSubjectInput.value = '';
+      elements.customSubjectGroup.style.display = 'none';
+      elements.timeInput.value = '';
+    }
+    
+    // Exported functions for onclick attributes
+    window.completeTask = function(index) {
+        if (confirm(`آیا فعالیت "${state.tasks[index].title}" را به عنوان انجام شده علامت می‌زنید؟`)) {
+            state.tasks.splice(index, 1);
+            saveTasks();
+            renderTasks();
+            updateAIHint();
+            updateStats();
+            updateParentReport();
+        }
+    };
+
+    window.deleteTask = function(index) {
+        if (confirm('آیا مطمئنید می‌خواهید این فعالیت را حذف کنید؟')) {
+            state.tasks.splice(index, 1);
+            saveTasks();
+            renderTasks();
+            updateAIHint();
+            updateStats();
+            updateParentReport();
+        }
+    };
+
+    window.editTask = function(index) {
+      const taskToEdit = state.tasks[index];
+      elements.taskInput.value = taskToEdit.title;
+      elements.gradeSelect.value = taskToEdit.grade;
+      
+      // Dispatch change events to trigger dynamic subject/field loading
+      const gradeEvent = new Event('change');
+      elements.gradeSelect.dispatchEvent(gradeEvent);
+      
+      setTimeout(() => {
+        if (taskToEdit.field) {
+          elements.fieldSelect.value = taskToEdit.field;
+          elements.fieldSelect.dispatchEvent(new Event('change'));
+        }
+        
+        setTimeout(() => {
+          elements.subjectSelect.value = taskToEdit.subject;
+          elements.timeInput.value = taskToEdit.time;
+          elements.addTaskBtn.textContent = '✏️ ویرایش فعالیت';
+          state.editingIndex = index;
+        }, 100);
+      }, 100);
+    };
+
+    // Module 5: Initialization
+    document.addEventListener('DOMContentLoaded', () => {
+      // Load initial state from localStorage
+      state.tasks = JSON.parse(localStorage.getItem('studyTasks')) || [];
+      state.userProfile = JSON.parse(localStorage.getItem('userProfile')) || {};
+      
+      // Apply saved settings
+      const userFont = localStorage.getItem('userFont') || "'Vazirmatn', sans-serif";
+      const userFontSize = localStorage.getItem('userFontSize') || "16";
+      document.body.style.fontFamily = userFont;
+      document.body.style.fontSize = userFontSize + 'px';
+      elements.fontSelect.value = userFont;
+      elements.fontSizeRange.value = userFontSize;
+      elements.fontSizeValue.textContent = userFontSize + 'px';
+
+      // Attach Event Listeners
+      elements.fontSelect.addEventListener('change', () => {
+        document.body.style.fontFamily = elements.fontSelect.value;
+        localStorage.setItem('userFont', elements.fontSelect.value);
+      });
+      elements.fontSizeRange.addEventListener('input', () => {
+        document.body.style.fontSize = elements.fontSizeRange.value + 'px';
+        localStorage.setItem('userFontSize', elements.fontSizeRange.value);
+        elements.fontSizeValue.textContent = elements.fontSizeRange.value + 'px';
+      });
+      elements.gradeSelect.addEventListener('change', (e) => {
+        // ... (existing logic)
+        const grade = e.target.value;
+        if (['دهم', 'یازدهم', 'دوازدهم'].includes(grade)) {
+            elements.fieldGroup.style.display = 'block';
+            elements.fieldSelect.value = '';
+            elements.subjectSelect.disabled = true;
+            elements.subjectSelect.innerHTML = '<option value="">ابتدا رشته را انتخاب کنید</option>';
+        } else {
+            elements.fieldGroup.style.display = 'none';
+            loadSubjects(grade);
+        }
+        updateStudyGuide(grade);
+        updateAIHint();
+      });
+      elements.fieldSelect.addEventListener('change', (e) => {
+        const grade = elements.gradeSelect.value;
+        const field = e.target.value;
+        if (grade && field) {
+          loadSubjects(grade, field);
+        }
+      });
+      elements.addTaskBtn.addEventListener('click', handleTask);
+      elements.searchInput.addEventListener('input', debounce(() => {
+        const term = elements.searchInput.value.toLowerCase();
+        const filtered = state.tasks.filter(task =>
+          task.title.toLowerCase().includes(term) || task.subject.toLowerCase().includes(term)
+        );
+        renderTasks(filtered);
+      }, 300));
+
+      // AI Mode Toggle
+      document.querySelectorAll('.ai-mode-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          document.querySelectorAll('.ai-mode-btn').forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          state.aiMode = this.dataset.mode;
+          
+          const onlineHint = document.querySelector('.hint');
+          if (state.aiMode === 'online') {
+            onlineHint.style.display = 'block';
+            if (!navigator.onLine) {
+              alert('⚠️ برای استفاده از حالت آنلاین، اینترنت خود را روشن کنید!');
+              state.aiMode = 'offline';
+              document.querySelector('[data-mode="offline"]').classList.add('active');
+              onlineHint.style.display = 'none';
+            }
+          } else {
+            onlineHint.style.display = 'none';
+          }
+        });
+      });
+      
+      // Parent Panel Login
+      elements.parentLoginBtn.addEventListener('click', () => {
+        const password = elements.parentPassword.value;
+        const hashedPassword = sha256(password);
+        if (hashedPassword === state.PARENT_PASSWORD_HASH) {
+          state.isParentMode = true;
+          elements.parentReportSection.style.display = 'block';
+          elements.parentPassword.value = '';
+          updateParentReport();
+          alert('✅ به پنل والدین خوش آمدید!');
+        } else {
+          alert('❌ رمز اشتباه است!');
+        }
+      });
+
+      // Run initial functions
+      renderTasks();
+      updateStats();
+      checkCalendarEvents();
+      updateAIHint();
+    });
+
+    // Helper function to debounce input
+    function debounce(func, delay) {
+      let timeout;
+      return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), delay);
+      };
+    }
+    
+    // Functions from original code, slightly modified to fit the new structure
+    function loadSubjects(grade, field = null) {
+      elements.subjectSelect.innerHTML = '';
+      elements.subjectSelect.disabled = false;
+      let subjects = field && dataStore.subjectsByGrade[grade][field]
+                     ? dataStore.subjectsByGrade[grade][field]
+                     : Array.isArray(dataStore.subjectsByGrade[grade])
+                     ? dataStore.subjectsByGrade[grade]
+                     : [];
+      
+      subjects.forEach(subject => {
+        const option = document.createElement('option');
+        option.value = subject;
+        option.textContent = subject;
+        elements.subjectSelect.appendChild(option);
+      });
+      const customOption = document.createElement('option');
+      customOption.value = 'custom';
+      customOption.textContent = '➕ درس جدید';
+      elements.subjectSelect.appendChild(customOption);
+      elements.subjectSelect.value = ''; // Reset to default
+    }
+
+    function saveTasks() {
+      localStorage.setItem('studyTasks', JSON.stringify(state.tasks));
+    }
+
+    function updateAIHint() {
+      if (state.tasks.length === 0) {
+        elements.aiHintBox.style.display = 'none';
+        return;
+      }
+      const hint = generateAIPersonalizedAdvice();
+      elements.aiHintText.innerHTML = hint;
+      elements.aiHintBox.style.display = 'flex';
+    }
+
+    function checkCalendarEvents() {
+      const today = new Date();
+      const persianDate = toPersianDate(today);
+      const dateKey = persianDate.split('/')[0] + '-' + persianDate.split('/')[1] + '-' + persianDate.split('/')[2];
+      if (dataStore.iranianEvents[dateKey]) {
+        elements.calendarHint.textContent = dataStore.iranianEvents[dateKey];
+        elements.calendarHint.style.display = 'block';
+      } else {
+        elements.calendarHint.style.display = 'none';
+      }
+    }
+
+    function getMotivationalMessage(gender, grade, streakDays) {
+      const messages = { male: ["💪 قهرمان! ادامه بده...", "🔥 شیر جنگی!..."], female: ["🌟 ستاره درخشان!...", "💐 گلِ علم!..."], neutral: ["🌈 قهرمان یادگیری!...", "🎯 هدف‌گیر دقیق!..."] };
+      let selectedMessages = messages.neutral;
+      if (gender === 'male') selectedMessages = messages.male; else if (gender === 'female') selectedMessages = messages.female;
+      return streakDays > 0 ? `🔥 ${streakDays} روز متوالی برنامه‌ریزی کردی! این عالیه!` : selectedMessages[Math.floor(Math.random() * selectedMessages.length)];
+    }
+
+    function analyzeStudyPattern() {
+      if (state.tasks.length < 3) return null;
+      const studyHours = state.tasks.map(task => new Date(task.createdAt).getHours());
+      const morningCount = studyHours.filter(h => h >= 6 && h < 12).length;
+      const afternoonCount = studyHours.filter(h => h >= 12 && h < 18).length;
+      const eveningCount = studyHours.filter(h => h >= 18 || h < 6).length;
+      let preferredTime = 'evening';
+      if (morningCount > afternoonCount && morningCount > eveningCount) preferredTime = 'morning';
+      else if (afternoonCount > morningCount && afternoonCount > eveningCount) preferredTime = 'afternoon';
+      return preferredTime;
+    }
+    
+    function calculateStreakDays() {
+      if (state.tasks.length === 0) return 0;
+      const taskDates = [...new Set(state.tasks.map(task => toPersianDate(task.createdAt)))].sort();
+      let streak = 0;
+      const today = toPersianDate(new Date());
+      for (let i = taskDates.length - 1; i >= 0; i--) {
+        if (taskDates[i] === today) {
+          streak++;
+          today.setDate(today.getDate() - 1);
+        } else {
+          break;
+        }
+      }
+      return streak;
+    }
+
+    function updateParentReport() {
+      if (!state.isParentMode) return;
+      elements.parentTotalTasks.textContent = state.tasks.length;
+      const totalMinutes = state.tasks.reduce((sum, task) => sum + task.time, 0);
+      elements.parentTotalTime.textContent = `${totalMinutes} دقیقه`;
+      elements.parentGrade.textContent = elements.gradeSelect.value || '-';
+      elements.parentAISummary.textContent = generateParentAISummary();
+    }
+    
+    function generateParentAISummary() {
+      // ... (existing logic)
+      if (state.tasks.length === 0) return "هنوز فعالیتی ثبت نشده است. لطفاً به فرزندتان یادآوری کنید برنامه‌ریزی کند.";
+      const totalTasks = state.tasks.length;
+      const totalTime = state.tasks.reduce((sum, task) => sum + task.time, 0);
+      const avgTime = Math.round(totalTime / totalTasks);
+      const lastActivity = new Date(state.tasks[state.tasks.length - 1].createdAt);
+      const today = new Date();
+      const daysSinceLastActivity = Math.floor((today - lastActivity) / (1000 * 60 * 60 * 24));
+      
+      if (daysSinceLastActivity > 2) return `هشدار: فرزند شما ${daysSinceLastActivity} روز است برنامه‌ریزی نکرده است.`;
+      if (totalTime < 60) return `توجه: مجموع زمان مطالعه کم است (${totalTime} دقیقه). پیشنهاد می‌کنیم زمان مطالعه را افزایش دهید.`;
+      if (avgTime < 20) return `پیشنهاد: میانگین زمان هر فعالیت (${avgTime} دقیقه) کم است. بهتر است فعالیت‌ها را ادغام کند.`;
+      return `عالی! فرزند شما ${totalTasks} فعالیت با مجموع ${totalTime} دقیقه ثبت کرده است.`;
+    }
+  </script>
+</body>
 </html>
